@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using StronglyTypedIds;
 
 namespace AutoProperty.Generator;
 
@@ -13,9 +14,7 @@ public class AutoPropertyGenerator : IIncrementalGenerator
         var pipeline = context.SyntaxProvider.CreateSyntaxProvider(
                 predicate: static (node, _) => NodeIsEligibleForGeneration(node),
                 transform: static (ctx, _) => TransformNode(ctx, _))
-            .Where(static x => x.HasValue) // filter out null
-            .Select(static (x, _) =>
-                x!.Value); // force result to the nullable value so GenerateOutput doesn't receive null parameters
+            .Where(static x => x is not null); // filter out null
 
         context.RegisterSourceOutput(pipeline, GenerateOutput);
     }
@@ -25,7 +24,7 @@ public class AutoPropertyGenerator : IIncrementalGenerator
         => node is TypeDeclarationSyntax { BaseList.Types.Count: > 0 }
             and (ClassDeclarationSyntax or RecordDeclarationSyntax);
 
-    private static (string NamespaceName, string ClassName, string[] Properties)? TransformNode(
+    private static ClassToGenerate TransformNode(
         GeneratorSyntaxContext generatorContext,
         CancellationToken cancellationToken)
     {
@@ -65,17 +64,18 @@ public class AutoPropertyGenerator : IIncrementalGenerator
             .ToArray();
 
         // Add the unimplemented properties in the return result
-        return (
-            classSymbol.ContainingNamespace.ToDisplayString(),
-            classSymbol.Name,
-            unimplementedProperties
-        );
+        return new ClassToGenerate
+        {
+            NamespaceName = classSymbol.ContainingNamespace.ToDisplayString(),
+            ClassName = classSymbol.Name,
+            Properties = new EquatableArray<string>(unimplementedProperties)
+        };
     }
 
     private static void GenerateOutput(SourceProductionContext context,
-        (string NamespaceName, string ClassName, string[] Properties) classToGenerate)
+        ClassToGenerate classToGenerate)
     {
-        // use an interopolated multi-line string for simplicity. 
+        // use an interpolated multi-line string for simplicity. 
         // This could also be done with a StringBuilder or some type of class builder.
         var properties = string.Join("\n\n\t\t\t", classToGenerate.Properties);
         var sourceText = $$"""
@@ -92,4 +92,13 @@ public class AutoPropertyGenerator : IIncrementalGenerator
 
         context.AddSource($"{classToGenerate.NamespaceName}.{classToGenerate.ClassName}.g.cs", sourceText);
     }
+}
+
+internal record ClassToGenerate
+{
+    public string NamespaceName { get; set; }
+    
+    public string ClassName { get; set; }
+    
+    public EquatableArray<string> Properties { get; set; }
 }
