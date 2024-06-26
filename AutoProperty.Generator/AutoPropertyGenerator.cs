@@ -52,14 +52,14 @@ public class AutoPropertyGenerator : IIncrementalGenerator
         // Compare and filter out any properties that are already implemented by the class 
         var unimplementedProperties = interfaceProperties
             .Where(p => !classProperties.Contains(p.Name))
-            .Select(i =>
+            .Select(i => new PropertyToGenerate()
             {
-                var getAccessor = i.GetMethod != null ? "get;" : "";
-                var setAccessor = i.SetMethod != null ? "set;" : "";
-
-                setAccessor = i.SetMethod?.IsInitOnly ?? false ? "init;" : setAccessor;
-
-                return $"public {i.Type} {i.Name} {{ {getAccessor} {setAccessor} }}";
+                Visibility = "public",
+                Type = i.Type.ToDisplayString(),
+                Name = i.Name,
+                HasGet = i.GetMethod != null,
+                HasSet = i.SetMethod != null,
+                IsInit = i.SetMethod is {IsInitOnly: true},
             })
             .ToArray();
 
@@ -68,13 +68,22 @@ public class AutoPropertyGenerator : IIncrementalGenerator
         {
             NamespaceName = classSymbol.ContainingNamespace.ToDisplayString(),
             ClassName = classSymbol.Name,
-            Properties = new EquatableArray<string>(unimplementedProperties)
+            Properties = new EquatableArray<PropertyToGenerate>(unimplementedProperties)
         };
     }
 
     private static void GenerateOutput(SourceProductionContext context,
         ClassToGenerate classToGenerate)
     {
+        var formattedProperties = classToGenerate.Properties.Select(i =>
+        {
+            var getAccessor = i.HasGet ? "get;" : "";
+            var setAccessor = i.HasSet ? "set;" : "";
+
+            setAccessor = i.IsInit ? "init;" : setAccessor;
+
+            return $"{i.Visibility} {i.Type} {i.Name} {{ {getAccessor} {setAccessor} }}";
+        });
         // use an interpolated multi-line string for simplicity. 
         // This could also be done with a StringBuilder or some type of class builder.
         var properties = string.Join("\n\n\t\t\t", classToGenerate.Properties);
@@ -100,5 +109,20 @@ internal record ClassToGenerate
     
     public string ClassName { get; set; }
     
-    public EquatableArray<string> Properties { get; set; }
+    public EquatableArray<PropertyToGenerate> Properties { get; set; }
+}
+
+internal record PropertyToGenerate
+{
+    public string Visibility { get; set; }
+
+    public string Name { get; set; }
+
+    public string Type { get; set; }
+
+    public bool HasGet { get; set; }
+
+    public bool HasSet { get; set; }
+
+    public bool IsInit { get; set; }
 }
