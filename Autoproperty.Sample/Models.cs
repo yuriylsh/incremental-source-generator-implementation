@@ -1,4 +1,8 @@
-﻿namespace Autoproperty.Sample;
+﻿using Autoproperty.Sample;
+[assembly: AutoProperty.Generator.AutoProperty(typeof(IAuditMetadata))]
+[assembly: AutoProperty.Generator.AutoProperty(typeof(IHasId))]
+[assembly: AutoProperty.Generator.AutoProperty(typeof(IHasActiveFlag))]
+namespace Autoproperty.Sample;
 
 public interface IHasId
 {
