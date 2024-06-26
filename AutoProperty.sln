@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoProperty.Generator", "AutoProperty.Generator\AutoProperty.Generator.csproj", "{846D3FBD-DFF6-4364-A9F1-C588B88AB451}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autoproperty.Sample", "Autoproperty.Sample\Autoproperty.Sample.csproj", "{780803D2-26BA-4F69-9C92-1065DC61D781}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoProperty.Tests", "AutoProperty.Tests\AutoProperty.Tests.csproj", "{AF85DF2A-50CD-40CB-AB99-A885886A573B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{846D3FBD-DFF6-4364-A9F1-C588B88AB451}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{846D3FBD-DFF6-4364-A9F1-C588B88AB451}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{846D3FBD-DFF6-4364-A9F1-C588B88AB451}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{846D3FBD-DFF6-4364-A9F1-C588B88AB451}.Release|Any CPU.Build.0 = Release|Any CPU
+		{780803D2-26BA-4F69-9C92-1065DC61D781}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{780803D2-26BA-4F69-9C92-1065DC61D781}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{780803D2-26BA-4F69-9C92-1065DC61D781}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{780803D2-26BA-4F69-9C92-1065DC61D781}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF85DF2A-50CD-40CB-AB99-A885886A573B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF85DF2A-50CD-40CB-AB99-A885886A573B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF85DF2A-50CD-40CB-AB99-A885886A573B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF85DF2A-50CD-40CB-AB99-A885886A573B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
